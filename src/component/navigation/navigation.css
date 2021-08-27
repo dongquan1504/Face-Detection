@@ -1,0 +1,6 @@
+.user::before  {
+    content: '\e77b'; 
+    border: 2px solid;
+    border-radius: 100%;
+    padding: 1rem;
+}
