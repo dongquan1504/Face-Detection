@@ -1,4 +1,4 @@
-.user::before  {
+.mdl2-contact::before  {
     content: '\e77b'; 
     border: 2px solid;
     border-radius: 100%;

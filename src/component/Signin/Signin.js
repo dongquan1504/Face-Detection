@@ -6,6 +6,7 @@ class Signin extends Component {
     this.state = {
       signInEmail: "",
       signInPassword: "",
+      wrong:""
     };
   }
   onChangeEmail = (event) => {
@@ -15,7 +16,7 @@ class Signin extends Component {
     this.setState({ signInPassword: event.target.value });
   };
   onSubmit = () => {
-    fetch("http://localhost:3000/login", {
+    fetch("https://the-first-server-api-face.herokuapp.com/login", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -28,6 +29,8 @@ class Signin extends Component {
         if(user.id){ // does the user exist? Did we receive a user with a property of id?
           this.props.loadUser(user);
           this.props.onRouteChange('home');
+        }else {
+          this.setState({wrong:'email or password is wrong'})
         }
       })
   };
@@ -68,6 +71,11 @@ class Signin extends Component {
             </div>
             <label className="pa0 ma0 lh-copy f6 pointer"></label>
           </fieldset>
+          <div className="mv3">
+              <label className=" lh-copy f6 red" htmlFor="password">
+                <p>{this.state.wrong}</p>
+              </label>
+            </div>
           <div className="">
             <input
               onClick={onSubmit}

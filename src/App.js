@@ -2,7 +2,6 @@ import "./App.css";
 
 import { Component } from "react";
 import Particles from "react-particles-js";
-import Clarifai from "clarifai";
 
 import Navigation from "./component/navigation/navigation";
 import Logo from "./component/logo/logo";
@@ -11,10 +10,6 @@ import Rank from "./component/Rank/Rank";
 import FaceRecognition from "./component/FaceRecognition/FaceRecognition";
 import Signin from "./component/Signin/Signin";
 import Register from "./component/Register/Register";
-
-const app = new Clarifai.App({
-  apiKey: "1db330cbe0ca437ba06880f192c7a63c",
-});
 
 const particlesOption = {
   particles: {
@@ -59,11 +54,6 @@ class App extends Component {
       },
     });
   };
-  componentDidMount() {
-    fetch("http://localhost:3000")
-      .then((res) => res.json())
-      .then((res) => console.log(res));
-  }
   calculateFaceLocation = (data) => {
     const clarifaiFace =
       data.outputs[0].data.regions[0].region_info.bounding_box;
@@ -85,26 +75,30 @@ class App extends Component {
   };
   onButtonSubmit = () => {
     this.setState({ image: this.state.input });
-    app.models
-      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+    fetch("https://the-first-server-api-face.herokuapp.com/imageUrl", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        input: this.state.input,
+      }),
+    })
+      .then((res) => res.json())
       .then((res) => {
         if (res) {
-          fetch("http://localhost:3000/image", {
+          fetch("https://the-first-server-api-face.herokuapp.com/image", {
             method: "put",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               id: this.state.user.id,
             }),
           })
-            .then((res) => res.json())
+            .then((resp) => resp.json())
             .then((count) => {
-              this.setState(Object.assign(this.state.user, { entries:count } ));
-            })
-          }
-          this.displayFaceBox(this.calculateFaceLocation(res)).catch(
-            (err) => console.log(err)
-          )
-        });
+              this.setState(Object.assign(this.state.user, { entries: count }));
+            });
+        };
+        this.displayFaceBox(this.calculateFaceLocation(res))
+      });
   };
   onRouteChange = (route) => {
     if (route === "signOut") {
@@ -138,7 +132,7 @@ class App extends Component {
             <FaceRecognition box={box} image={image} />
           </>
         ) : route === "signin" ? (
-          <Signin loadUser={loadUser} onRouteChange={this.onRouteChange} /> 
+          <Signin loadUser={loadUser} onRouteChange={this.onRouteChange} />
         ) : (
           <Register loadUser={loadUser} onRouteChange={onRouteChange} />
         )}

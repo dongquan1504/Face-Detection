@@ -5,7 +5,7 @@ import "./navigation.css"
 const Navigation = ({ onRouteChange, isSignedIn }) => {
   return isSignedIn ? (
     <nav className='white pa3' style={{ display: "flex", justifycontent: "flex-end", alignItems:"center"}}>
-      <p className='user dim ma2 pointer'/>
+      <p className='mdl2-contact dim ma2 pointer'/>
       <p
         onClick={() => onRouteChange("signOut")}
         className="f3 link dim underline pointer"
