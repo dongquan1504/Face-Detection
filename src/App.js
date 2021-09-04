@@ -75,30 +75,34 @@ class App extends Component {
   };
   onButtonSubmit = () => {
     this.setState({ image: this.state.input });
-    fetch("https://the-first-server-api-face.herokuapp.com/imageUrl", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        input: this.state.input,
-      }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res) {
-          fetch("https://the-first-server-api-face.herokuapp.com/image", {
-            method: "put",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              id: this.state.user.id,
-            }),
-          })
-            .then((resp) => resp.json())
-            .then((count) => {
-              this.setState(Object.assign(this.state.user, { entries: count }));
-            });
-        };
-        this.displayFaceBox(this.calculateFaceLocation(res))
-      });
+    if (this.state.image !== "") {
+      fetch("https://the-first-server-api-face.herokuapp.com/imageUrl", {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          input: this.state.input,
+        }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res) {
+            fetch("https://the-first-server-api-face.herokuapp.com/image", {
+              method: "put",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                id: this.state.user.id,
+              }),
+            })
+              .then((resp) => resp.json())
+              .then((count) => {
+                this.setState(
+                  Object.assign(this.state.user, { entries: count })
+                );
+              });
+          }
+          this.displayFaceBox(this.calculateFaceLocation(res));
+        });
+    }
   };
   onRouteChange = (route) => {
     if (route === "signOut") {
